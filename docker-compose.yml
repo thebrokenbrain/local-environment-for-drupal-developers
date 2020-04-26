@@ -2,8 +2,9 @@ version: "3.7"
 
 services:
   webserver:
-    build: 
-      context: ./bin/${PHPVERSION}
+    build:
+      context: ./bin
+      dockerfile: ${PHPVERSION}
     container_name: ${PHPVERSION}
     restart: 'always'
     ports:
