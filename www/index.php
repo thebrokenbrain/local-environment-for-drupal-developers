@@ -1,3 +1,0 @@
-<?php
-    print "<h1>" . $_SERVER['SERVER_ADDR'] . "</h1>";
-    print "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ultricies ac erat ut pretium. Donec sit amet urna quam. Suspendisse potenti. Vestibulum ut felis a eros pellentesque interdum at ac mauris. Curabitur rhoncus, libero sed tincidunt dignissim, eros nisl maximus ipsum, sed malesuada felis lacus quis sem. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Mauris at odio convallis, egestas lectus iaculis, rutrum ex. Vestibulum non gravida quam. Praesent et tristique arcu, ut facilisis ipsum.";

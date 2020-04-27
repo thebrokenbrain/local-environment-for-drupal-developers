@@ -1,18 +1,49 @@
-version: "3.7"
-
+version: '3.7'
 services:
   webserver:
     build:
       context: ./bin
-      dockerfile: ${PHPVERSION}
+      dockerfile: '${PHPVERSION}'
     restart: 'always'
     ports:
-      - "${HOST_HTTP_PORT}:80"
-      - "${HOST_HTTPS_PORT}:443"
-    #links: 
-    #  - database
+      - '${HOST_HTTP_PORT}:80'
+      - '${HOST_HTTPS_PORT}:443'
+    volumes:
+      - '${DOCUMENT_ROOT-./www}:/var/www/html'
+      - '${PHP_INI-./config/php/php.ini}:/usr/local/etc/php/php.ini'
+      - '${VHOSTS_DIR-./config/vhosts}:/etc/apache2/sites-enabled'
+      - '${LOG_DIR-./logs/apache2}:/var/log/apache2'
+    links:
+      - database
+
+  database:
+    build:
+      context: ./bin
+      dockerfile: '${DATABASE}'
+    restart: 'always'
     volumes: 
-      - ${DOCUMENT_ROOT-./www}:/var/www/html
-      - ${PHP_INI-./config/php/php.ini}:/usr/local/etc/php/php.ini
-      - ${VHOSTS_DIR-./config/vhosts}:/etc/apache2/sites-enabled
-      - ${LOG_DIR-./logs/apache2}:/var/log/apache2
+      - ${MYSQL_DATA_DIR-./data/mysql}:/var/lib/mysql
+      - ${MYSQL_LOG_DIR-./logs/mysql}:/var/log/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+  
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: database
+      PMA_PORT: 3306
+      PMA_USER: ${MYSQL_USER}
+      PMA_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - '${HOST_HTTP_PHPMYADMIN_PORT}:80'
+    volumes: 
+      - /sessions
+      - ${PHP_INI-./config/php/php.ini}:/usr/local/etc/php/conf.d/php-phpmyadmin.ini
+    links:
+      - database
